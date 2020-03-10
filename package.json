@@ -1,11 +1,13 @@
 {
-  "name": "wort-dataviz-color-schemes",
+  "name": "wort-dataviz-color-scheme",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
     "chroma-js": "2.1.0",
+    "@vx/pattern": "0.0.194",
+    "@vx/shape": "0.0.194",
     "rc-slider": "9.2.2",
     "react": "16.12.0",
     "react-color": "2.18.0",

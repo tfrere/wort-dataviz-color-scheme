@@ -58,41 +58,11 @@ export const generateVersusColorPalette = (
   numberOfolors,
   color
 ) => {
-  //console.log(color);
   color = updateColorForDarkMode(isDarkMode, color);
-  const colorAngle = 180 / numberOfolors;
-  const isOdd = numberOfolors % 2 == 1 ? true : false;
-  const complementColor = chroma(color).set("hsl.h", "+" + 180 / 2);
-  let left = chroma
-    .bezier([color, complementColor])
-    .scale()
-    .correctLightness()
-    .colors(numberOfolors / 2);
-  let right = chroma
-    .bezier([
-      chroma(color).set("hsl.h", "+" + 180 / 2),
-      chroma(color).set("hsl.h", "+" + 180)
-    ])
-    .scale()
-    .correctLightness()
-    .colors(numberOfolors / 2 + (isOdd ? 1 : 0));
-  //console.log(left);
-  //console.log(right);
-  if (isOdd) {
-    right.pop();
-  }
 
-  /*
-  return (
-    chroma
-      .scale("RdYlBu")
-      //.scale([color, chroma(color).set("hsl.h", "+" + amplitude)])
-      .padding(-0.15)
-      .colors(numberOfolors)
-  );
-  */
-
-  //chroma.scale('#RdYlBu');
-  let newColors = left.concat(right);
-  return newColors;
+  return chroma
+    .bezier([color, "white", chroma(color).set("hsl.h", "+" + 180)])
+    .scale()
+    .padding(-0.15)
+    .colors(numberOfolors);
 };

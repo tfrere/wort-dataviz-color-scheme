@@ -5,7 +5,9 @@ import {
   generateHeatMapColorPalette,
   generateDissociativeColorPalette,
   generateVersusColorPalette
-} from "./color.js";
+} from "./colors.js";
+
+import { linePatternList, circlePatternList, patterns } from "./patterns.js";
 
 import Slider from "rc-slider";
 import { HuePicker } from "react-color";
@@ -163,11 +165,43 @@ export class App extends Component {
       }
     );
 
+    let linePatternListRepresentation = linePatternList.map((pattern, i) => {
+      return (
+        <g>
+          <title>{pattern.id}</title>
+          <rect
+            key={pattern.id + i}
+            width="40"
+            height="40"
+            transform={`translate(${i * 50}, 0)`}
+            fill={`url(#${pattern.id})`}
+            stroke={"black"}
+          />
+        </g>
+      );
+    });
+
+    let circlePatternListRepresentation = circlePatternList.map(
+      (pattern, i) => {
+        return (
+          <g>
+            <title>{pattern.id}</title>
+            <rect
+              key={pattern.id + i}
+              width="40"
+              height="40"
+              transform={`translate(${i * 50}, 0)`}
+              fill={`url(#${pattern.id})`}
+              stroke={"black"}
+            />
+          </g>
+        );
+      }
+    );
+
     return (
       <div className={appClass}>
         <div className="content">
-          <h1>Wort color scheme generator</h1>
-
           <div className="nav">
             <div className="nav__entity">
               <h5>Dark mode </h5>
@@ -238,12 +272,17 @@ export class App extends Component {
           {dissociativeColorSchemeRepresentation}
           <h5>Versus</h5>
           {versusColorSchemeRepresentation}
-          {/*
-          <h2>Pattern list</h2>
-          <svg width={patternList.length * 50} height={40}>
-            {patternListRepresentation}
+          <h2>Patterns</h2>
+          <h5>Lines</h5>
+          <svg width={linePatternList.length * 50} height={40}>
+            {patterns()}
+            {linePatternListRepresentation}
           </svg>
-          */}
+          <h5>Circles</h5>
+          <svg width={circlePatternList.length * 50} height={40}>
+            {patterns()}
+            {circlePatternListRepresentation}
+          </svg>
           <br />
           <br />
           <br />
