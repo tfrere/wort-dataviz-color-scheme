@@ -19,6 +19,7 @@ export let linePatternList = [];
 for (let i = 1; i < numberOfPattern; i++) {
   linePatternList.push({
     type: type,
+    key: `pattern-line-${i}`,
     id: `pattern-line-${i}`,
     width: 5 + i,
     height: 5 + i,
@@ -34,13 +35,15 @@ export let circlePatternList = [];
 for (let i = 1; i < numberOfPattern; i++) {
   circlePatternList.push({
     type: "patternCircles",
+    key: `pattern-circle-${i}`,
     id: `pattern-circle-${i}`,
     width: 5 + i,
     height: 5 + i,
-    stroke: color,
-    strokeWidth: i,
-    fill: "transparent",
-    orientation: orientations
+    strokeWidth: 0,
+    stroke: "transparent",
+    fill: color,
+    radius: (i + 1) / 2,
+    complement: true
   });
 }
 
@@ -51,7 +54,6 @@ export const patterns = () => {
         return React.createElement(Components[pattern.type], pattern);
       })}
       {circlePatternList.map((pattern, i) => {
-        console.log(pattern);
         return React.createElement(Components[pattern.type], pattern);
       })}
     </defs>

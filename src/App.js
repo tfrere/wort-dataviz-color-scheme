@@ -1,25 +1,31 @@
 import React, { Component } from "react";
-import "./styles.scss";
+import "./styles/styles.scss";
+
+import chroma from "chroma-js";
 
 import {
   generateHeatMapColorPalette,
-  generateDissociativeColorPalette,
-  generateVersusColorPalette
+  generateCategoricalColorPalette,
+  generateVersusColorPalette,
+  generateContrastedColorPalette
 } from "./colors.js";
 
-import { linePatternList, circlePatternList, patterns } from "./patterns.js";
+import { linePatternList, circlePatternList } from "./patterns.js";
 
 import Slider from "rc-slider";
 import { HuePicker } from "react-color";
+
+import ColorScheme from "./ColorScheme.jsx";
+import PatternScheme from "./PatternScheme.jsx";
 
 const editionColors = [
   { lang: "fr", color: "#db1e45" },
   { lang: "de", color: "#0f9cd8" },
   { lang: "pt", color: "#cd1719" },
-  { lang: "en", color: "ffc000" }
+  { lang: "en", color: "#ffc000" }
 ];
 
-const n = 8;
+const n = 7;
 const color = editionColors[1].color;
 const isDark = false;
 
@@ -27,9 +33,6 @@ export class App extends Component {
   state = {
     darkMode: isDark,
     currentColor: color,
-    dissociativeColors: generateDissociativeColorPalette(isDark, n, color),
-    associativeColors: generateHeatMapColorPalette(isDark, n, color),
-    versusColors: generateVersusColorPalette(isDark, n, color),
     numberOfColors: n,
     currentEdition: "de",
     currentColorFilter: "normal"
@@ -37,22 +40,7 @@ export class App extends Component {
 
   handleColorChangeComplete = color => {
     this.setState({
-      currentColor: color.hex,
-      dissociativeColors: generateDissociativeColorPalette(
-        this.state.darkMode,
-        this.state.numberOfColors,
-        color.hex
-      ),
-      associativeColors: generateHeatMapColorPalette(
-        this.state.darkMode,
-        this.state.numberOfColors,
-        color.hex
-      ),
-      versusColors: generateVersusColorPalette(
-        this.state.darkMode,
-        this.state.numberOfColors,
-        color.hex
-      )
+      currentColor: color.hex
     });
   };
 
@@ -63,7 +51,7 @@ export class App extends Component {
         currentEdition: actualEdition
       },
       () => {
-        editionColors.map(editionColor => {
+        editionColors.forEach(editionColor => {
           if (editionColor.lang === actualEdition) {
             this.handleColorChangeComplete({ hex: editionColor.color });
           }
@@ -95,114 +83,43 @@ export class App extends Component {
     );
   };
 
-  toggleColorMode = () => {
-    this.setState(
-      {
-        areColorsDissociative: !this.state.areColorsDissociative
-      },
-      () => {
-        this.handleColorChangeComplete({ hex: this.state.currentColor });
-      }
-    );
-  };
-
-  updateColors = (colors, darkMode) => {
-    //const newGrey = darkMode ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.3)";
-    this.setState({ colors: colors });
-  };
-
   render() {
     let appClass = `app ${this.state.darkMode ? "dark" : "light"}`;
 
-    let associativeColorSchemeRepresentation = this.state.associativeColors.map(
-      (color, i) => {
-        return (
-          <div
-            key={color + i}
-            style={{
-              display: "inline-block",
-              marginRight: "10px",
-              width: "40px",
-              height: "40px",
-              backgroundColor: color
-            }}
-          />
-        );
-      }
+    const categoricalColorScheme = generateCategoricalColorPalette(
+      this.state.darkMode,
+      this.state.numberOfColors,
+      this.state.currentColor
     );
 
-    let dissociativeColorSchemeRepresentation = this.state.dissociativeColors.map(
-      (color, i) => {
-        return (
-          <div
-            key={color + i}
-            style={{
-              display: "inline-block",
-              marginRight: "10px",
-              width: "40px",
-              height: "40px",
-              backgroundColor: color
-            }}
-          />
-        );
-      }
+    const heatMapColorScheme = generateHeatMapColorPalette(
+      this.state.darkMode,
+      this.state.numberOfColors,
+      this.state.currentColor
     );
 
-    let versusColorSchemeRepresentation = this.state.versusColors.map(
-      (color, i) => {
-        return (
-          <div
-            key={color + i}
-            style={{
-              display: "inline-block",
-              marginRight: "10px",
-              width: "40px",
-              height: "40px",
-              backgroundColor: color
-            }}
-          />
-        );
-      }
-    );
-
-    let linePatternListRepresentation = linePatternList.map((pattern, i) => {
-      return (
-        <g>
-          <title>{pattern.id}</title>
-          <rect
-            key={pattern.id + i}
-            width="40"
-            height="40"
-            transform={`translate(${i * 50}, 0)`}
-            fill={`url(#${pattern.id})`}
-            stroke={"black"}
-          />
-        </g>
-      );
-    });
-
-    let circlePatternListRepresentation = circlePatternList.map(
-      (pattern, i) => {
-        return (
-          <g>
-            <title>{pattern.id}</title>
-            <rect
-              key={pattern.id + i}
-              width="40"
-              height="40"
-              transform={`translate(${i * 50}, 0)`}
-              fill={`url(#${pattern.id})`}
-              stroke={"black"}
-            />
-          </g>
-        );
-      }
+    const versusColorScheme = generateVersusColorPalette(
+      this.state.darkMode,
+      this.state.numberOfColors,
+      this.state.currentColor
     );
 
     return (
       <div className={appClass}>
         <div className="content">
           <div className="nav">
+            <div className="nav__entity">
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  background: this.state.currentColor,
+                  borderRadius: "3px"
+                }}
+              />
+              {Math.floor(chroma(this.state.currentColor).get("hsl.s"))}
+              {Math.floor(chroma(this.state.currentColor).get("hsl.l"))}
+            </div>
             <div className="nav__entity">
               <h5>Dark mode </h5>
               <button
@@ -244,10 +161,10 @@ export class App extends Component {
                 value={this.state.currentColorFilter}
               >
                 <option value="normal">none</option>
-                <option value="protanopia">protanopia</option>
-                <option value="deuteranopia">deuteranopia</option>
-                <option value="tritanopia">tritanopia</option>
-                <option value="monochromacy">monochromacy</option>
+                <option value="protanopia">{"protanopia < 2%"}</option>
+                <option value="deuteranopia">{"deuteranopia < 2%"}</option>
+                <option value="tritanopia">{"tritanopia < 0.1%"}</option>
+                <option value="monochromacy">{"monochromacy < 0.1%"} </option>
               </select>
             </div>
             <div className="nav__entity">
@@ -266,23 +183,49 @@ export class App extends Component {
             </div>
           </div>
           <h2>Color schemes</h2>
-          <h5>HeatMap</h5>
-          {associativeColorSchemeRepresentation}
-          <h5>Dissociative</h5>
-          {dissociativeColorSchemeRepresentation}
+          <h5>Categorical</h5>
+          <p>
+            Usefull for good category distinction in a legend or grouping things
+            together. Max of 6.
+          </p>
+          <ColorScheme
+            colors={categoricalColorScheme}
+            contrastedColors={generateContrastedColorPalette(
+              categoricalColorScheme
+            )}
+          />
+          <h5>Sequential</h5>
+          <p>Useful for heatmaps.</p>
+          <ColorScheme
+            colors={heatMapColorScheme}
+            contrastedColors={generateContrastedColorPalette(
+              heatMapColorScheme
+            )}
+          />
           <h5>Versus</h5>
-          {versusColorSchemeRepresentation}
+          <p>
+            Useful for ranges that have two extremes with a baseline in the
+            middle or dealing with negative values.{" "}
+          </p>
+          <ColorScheme
+            colors={versusColorScheme}
+            contrastedColors={generateContrastedColorPalette(versusColorScheme)}
+          />
           <h2>Patterns</h2>
+          <p>
+            Useful to highlight something in a already colored chart. Could also
+            be used for complete colorblind.
+          </p>
           <h5>Lines</h5>
-          <svg width={linePatternList.length * 50} height={40}>
-            {patterns()}
-            {linePatternListRepresentation}
-          </svg>
+          <PatternScheme
+            color={this.state.currentColor}
+            patterns={linePatternList}
+          />
           <h5>Circles</h5>
-          <svg width={circlePatternList.length * 50} height={40}>
-            {patterns()}
-            {circlePatternListRepresentation}
-          </svg>
+          <PatternScheme
+            color={this.state.currentColor}
+            patterns={circlePatternList}
+          />
           <br />
           <br />
           <br />
