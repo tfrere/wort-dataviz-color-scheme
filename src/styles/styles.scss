@@ -14,35 +14,88 @@ svg text {
   user-select: none;
 }
 
-select {
-  height: 27px;
-  border-radius: 3px;
-  border: 1px solid grey;
+hr {
+  margin: 10px 10px;
+  width: 100%;
+  opacity: 0.2;
+  height:1px;
+  border: 0;
+  background-color: rgba(0,0,0,0.3);
 }
 
+code {
+  padding: .2rem .5rem;
+  margin: 0 .2rem;
+  font-size: 90%;
+  white-space: nowrap;
+  background: #F1F1F1;
+  border: 1px solid #E1E1E1;
+  border-radius: 4px; }
+pre > code {
+  display: block;
+  padding: 0.5rem 1.5rem;
+  white-space: pre; }
+
+
 .nav {
-  width: 100%;
-  height: 80px;
+  width: 160px;
+  padding-top: 38px;
+  padding-right: 20px;
+  height: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
   z-index: 9;
+  position: fixed;
+  left:0;
+  top:0;
+  &:after {
+    content: "";
+    border-right: 1px solid rgba(0,0,0,0.3);
+    opacity: 0.2;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+  }
   h5 {
     margin-bottom: 10px;
     margin-top: 5px;
   }
+  span {
+    font-size: 90%;
+  }
+  label {
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    opacity: 0.5;
+    font-size: 0.7em;
+    margin: 0;
+    margin-bottom: 3px;
+    display: inline-block;
+  }
+  select {
+    width: 120px;
+    height: 27px;
+    border-radius: 3px!important;
+    border: 1px solid grey;
+    margin-bottom: 10px;
+    background: transparent!important;
+  } 
   button {
-    margin-bottom: 0;
+    width: 120px;
+    margin-bottom: 10px;
   }
 }
 
-.nav__entity:not(:first-child) {
+.nav__entity {
   margin-left: 20px;
 }
 
 .content {
   padding-top: 20px;
-  max-width: 80%;
+  padding-left: 150px;
+  padding-right: 30px;
 }
 
 .hidden {
@@ -103,16 +156,19 @@ button {
   }
 }
 
-select {
-  background: transparent!important;
-}
-
 .dark {
   background: rgba(26, 26, 26, 1);
   color: white;
+  .nav:after {
+      border-right: 1px solid rgba(255,255,255,0.3);
+  }
   h1, h2, h3, h4, h5, h6, p {
     color: white;
   }  
+  code {
+    background: rgb(20, 20, 20);
+    border: 1px solid rgb(39, 39, 39);
+  }
   button {
     border: 1px solid white;
     color: white;
@@ -128,10 +184,10 @@ select {
 
 }
 
-
 .app {
   font-family: "Fira Sans";
 }
 
 
 @import "./color-deficiencies-filters.scss";
+@import "./rc-slider.scss";
